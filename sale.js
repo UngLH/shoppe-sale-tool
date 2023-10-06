@@ -173,9 +173,8 @@ function saveAndGetVoucherData(voucher) {
 			);
 
 			const promotionID = voucher.promotionid;
-			const startTime = voucher.start_time;
-			const discountValue = voucher.reward_value / 100000;
 
+			const discountValue = voucher.reward_value / 100000;
 			const promotionData = {
 				can_use_coins: true,
 				use_coins: false,
@@ -197,8 +196,12 @@ function saveAndGetVoucherData(voucher) {
 					},
 				],
 			};
+			const startTime = new Date(voucher.start_time - 1000);
+			const hour = startTime.getHours();
+			const minute = startTime.getMinutes();
+			const second = startTime.getSeconds();
 			const job = new CronJob(
-				"0 22 2 * * *",
+				`${second} ${minute} ${hour} * * *`,
 				function () {
 					sleep(625).then(() => {
 						placeOrder(Date.now(), promotionData, discountValue);
